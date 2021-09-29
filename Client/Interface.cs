@@ -51,6 +51,11 @@ namespace CoopClient
             Main.MainNetworking.DisConnectFromServer(serverAddress);
         }
 
+        public static void Disconnect()
+        {
+            Main.MainNetworking.DisConnectFromServer("");
+        }
+
         public static bool IsOnServer()
         {
             return Main.MainNetworking.IsOnServer();
@@ -58,7 +63,11 @@ namespace CoopClient
 
         public static bool IsMenuVisible()
         {
+#if NON_INTERACTIVE
+            return false;
+#else
             return Main.MainMenu.MenuPool.AreAnyVisible;
+#endif
         }
 
         public static bool IsChatFocused()
