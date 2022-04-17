@@ -17,6 +17,8 @@ namespace CoopClient
 
     static class Util
     {
+        private static string SettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Rockstar Games\\GTA V\\ModSettings\\CoopSettings.xml";
+
         #region -- POINTER --
         private static int SteeringAngleOffset { get; set; }
 
@@ -431,27 +433,41 @@ namespace CoopClient
         public static Settings ReadSettings()
         {
             XmlSerializer ser = new XmlSerializer(typeof(Settings));
-
-            string path = Directory.GetCurrentDirectory() + "\\scripts\\CoopSettings.xml";
+            
             Settings settings = null;
 
-            if (File.Exists(path))
+            if (File.Exists(SettingsPath))
             {
-                using (FileStream stream = File.OpenRead(path))
+                using (FileStream stream = File.OpenRead(SettingsPath))
                 {
                     settings = (Settings)ser.Deserialize(stream);
                 }
 
-                using (FileStream stream = new FileStream(path, FileMode.Truncate, FileAccess.ReadWrite))
+                try
                 {
-                    ser.Serialize(stream, settings);
+                    using (FileStream stream = new FileStream(SettingsPath, FileMode.Truncate, FileAccess.ReadWrite))
+                    {
+                        ser.Serialize(stream, settings);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    GTA.UI.Notification.Show("Error saving player settings: " + ex.Message);  
+                }
+
             }
             else
             {
-                using (FileStream stream = File.OpenWrite(path))
+                try
                 {
-                    ser.Serialize(stream, settings = new Settings());
+                    using (FileStream stream = File.OpenWrite(SettingsPath))
+                    {
+                        ser.Serialize(stream, settings = new Settings());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    GTA.UI.Notification.Show("Error saving player settings: " + ex.Message);
                 }
             }
 
@@ -462,9 +478,7 @@ namespace CoopClient
         {
             try
             {
-                string path = Directory.GetCurrentDirectory() + "\\scripts\\CoopSettings.xml";
-
-                using (FileStream stream = new FileStream(path, File.Exists(path) ? FileMode.Truncate : FileMode.Create, FileAccess.ReadWrite))
+                using (FileStream stream = new FileStream(SettingsPath, File.Exists(SettingsPath) ? FileMode.Truncate : FileMode.Create, FileAccess.ReadWrite))
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(Settings));
                     ser.Serialize(stream, Main.MainSettings);

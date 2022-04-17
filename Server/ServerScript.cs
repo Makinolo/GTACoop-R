@@ -316,7 +316,6 @@ namespace CoopServer
                         CustomPacketID = customID,
                         Bytes = bytes
                     }.PacketToNetOutGoingMessage(outgoingMessage);
-                    Logging.Debug($"SendModPacketToAll recipients list {connections.Count}");
                     Server.MainNetServer.SendMessage(outgoingMessage, connections, NetDeliveryMethod.ReliableOrdered, (byte)ConnectionChannel.Mod);
                     Server.MainNetServer.FlushSendQueue();
                 }

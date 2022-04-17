@@ -279,15 +279,17 @@ namespace CoopClient
             PlayerList.LeftAlign = leftAlign;
         }
 
-#if DEBUG
         /// <summary>
         /// ?
         /// </summary>
         /// <param name="value"></param>
         public static void SetDebug(bool value)
         {
+
+#if DEBUG
             Main.UseDebug = value;
-        }
 #endif
+        }
+
     }
-}
+    }
